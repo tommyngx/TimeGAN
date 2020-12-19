@@ -113,7 +113,7 @@ def timegan (ori_data, parameters):
     Returns:
       - X_tilde: recovered data
     """     
-    with tf.variable_scope("recovery", reuse = tf.AUTO_REUSE):       
+    with tf1.variable_scope("recovery", reuse = tf1.AUTO_REUSE):       
       r_cell = tf.nn.rnn_cell.MultiRNNCell([rnn_cell(module_name, hidden_dim) for _ in range(num_layers)])
       r_outputs, r_last_states = tf.nn.dynamic_rnn(r_cell, H, dtype=tf.float32, sequence_length = T)
       X_tilde = tf.contrib.layers.fully_connected(r_outputs, dim, activation_fn=tf.nn.sigmoid) 
@@ -199,8 +199,8 @@ def timegan (ori_data, parameters):
             
   # Generator loss
   # 1. Adversarial loss
-  G_loss_U = tf.losses.sigmoid_cross_entropy(tf.ones_like(Y_fake), Y_fake)
-  G_loss_U_e = tf.losses.sigmoid_cross_entropy(tf.ones_like(Y_fake_e), Y_fake_e)
+  G_loss_U = tf1.losses.sigmoid_cross_entropy(tf.ones_like(Y_fake), Y_fake)
+  G_loss_U_e = tf1.losses.sigmoid_cross_entropy(tf.ones_like(Y_fake_e), Y_fake_e)
     
   # 2. Supervised loss
   G_loss_S = tf1.losses.mean_squared_error(H[:,1:,:], H_hat_supervise[:,:-1,:])
