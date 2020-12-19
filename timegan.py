@@ -41,7 +41,7 @@ def timegan (ori_data, parameters):
     - generated_data: generated time-series data
   """
   # Initialization on the Graph
-  tf.reset_default_graph()
+  tf1.reset_default_graph()
 
   # Basic Parameters
   no, seq_len, dim = np.asarray(ori_data).shape
@@ -97,7 +97,7 @@ def timegan (ori_data, parameters):
     Returns:
       - H: embeddings
     """
-    with tf.variable_scope("embedder", reuse = tf.AUTO_REUSE):
+    with tf1.variable_scope("embedder", reuse = tf1.AUTO_REUSE):
       e_cell = tf.nn.rnn_cell.MultiRNNCell([rnn_cell(module_name, hidden_dim) for _ in range(num_layers)])
       e_outputs, e_last_states = tf.nn.dynamic_rnn(e_cell, X, dtype=tf.float32, sequence_length = T)
       H = tf.contrib.layers.fully_connected(e_outputs, hidden_dim, activation_fn=tf.nn.sigmoid)     
@@ -186,15 +186,15 @@ def timegan (ori_data, parameters):
     
   # Variables        
   e_vars = [v for v in tf1.trainable_variables() if v.name.startswith('embedder')]
-  r_vars = [v for v in tf.trainable_variables() if v.name.startswith('recovery')]
-  g_vars = [v for v in tf.trainable_variables() if v.name.startswith('generator')]
-  s_vars = [v for v in tf.trainable_variables() if v.name.startswith('supervisor')]
-  d_vars = [v for v in tf.trainable_variables() if v.name.startswith('discriminator')]
+  r_vars = [v for v in tf1.trainable_variables() if v.name.startswith('recovery')]
+  g_vars = [v for v in tf1.trainable_variables() if v.name.startswith('generator')]
+  s_vars = [v for v in tf1.trainable_variables() if v.name.startswith('supervisor')]
+  d_vars = [v for v in tf1.trainable_variables() if v.name.startswith('discriminator')]
     
   # Discriminator loss
   D_loss_real = tf1.losses.sigmoid_cross_entropy(tf.ones_like(Y_real), Y_real)
-  D_loss_fake = tf.losses.sigmoid_cross_entropy(tf.zeros_like(Y_fake), Y_fake)
-  D_loss_fake_e = tf.losses.sigmoid_cross_entropy(tf.zeros_like(Y_fake_e), Y_fake_e)
+  D_loss_fake = tf1.losses.sigmoid_cross_entropy(tf.zeros_like(Y_fake), Y_fake)
+  D_loss_fake_e = tf1.losses.sigmoid_cross_entropy(tf.zeros_like(Y_fake_e), Y_fake_e)
   D_loss = D_loss_real + D_loss_fake + gamma * D_loss_fake_e
             
   # Generator loss
@@ -215,16 +215,16 @@ def timegan (ori_data, parameters):
   G_loss = G_loss_U + gamma * G_loss_U_e + 100 * tf.sqrt(G_loss_S) + 100*G_loss_V 
             
   # Embedder network loss
-  E_loss_T0 = tf.losses.mean_squared_error(X, X_tilde)
+  E_loss_T0 = tf1.losses.mean_squared_error(X, X_tilde)
   E_loss0 = 10*tf.sqrt(E_loss_T0)
   E_loss = E_loss0  + 0.1*G_loss_S
     
   # optimizer
   E0_solver = tf1.train.AdamOptimizer().minimize(E_loss0, var_list = e_vars + r_vars)
-  E_solver = tf.train.AdamOptimizer().minimize(E_loss, var_list = e_vars + r_vars)
-  D_solver = tf.train.AdamOptimizer().minimize(D_loss, var_list = d_vars)
-  G_solver = tf.train.AdamOptimizer().minimize(G_loss, var_list = g_vars + s_vars)      
-  GS_solver = tf.train.AdamOptimizer().minimize(G_loss_S, var_list = g_vars + s_vars)   
+  E_solver = tf1.train.AdamOptimizer().minimize(E_loss, var_list = e_vars + r_vars)
+  D_solver = tf1.train.AdamOptimizer().minimize(D_loss, var_list = d_vars)
+  G_solver = tf1.train.AdamOptimizer().minimize(G_loss, var_list = g_vars + s_vars)      
+  GS_solver = tf1.train.AdamOptimizer().minimize(G_loss_S, var_list = g_vars + s_vars)   
         
   ## TimeGAN training   
   sess = tf1.Session()
