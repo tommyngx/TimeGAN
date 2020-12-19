@@ -1,4 +1,4 @@
-# TimeGAN - Fine-
+# TimeGAN - (Fine-Tuning) 
 Codebase for "Time-series Generative Adversarial Networks (TimeGAN)"
 
 # Codebase for "Time-series Generative Adversarial Networks (TimeGAN)"
