@@ -129,7 +129,7 @@ def timegan (ori_data, parameters):
     Returns:
       - E: generated embedding
     """        
-    with tf.variable_scope("generator", reuse = tf.AUTO_REUSE):
+    with tf1.variable_scope("generator", reuse = tf1.AUTO_REUSE):
       e_cell = tf.nn.rnn_cell.MultiRNNCell([rnn_cell(module_name, hidden_dim) for _ in range(num_layers)])
       e_outputs, e_last_states = tf.nn.dynamic_rnn(e_cell, Z, dtype=tf.float32, sequence_length = T)
       E = tf.contrib.layers.fully_connected(e_outputs, hidden_dim, activation_fn=tf.nn.sigmoid)     
